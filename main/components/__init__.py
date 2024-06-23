@@ -64,8 +64,10 @@ class BookFormComponent(FormComponent):
         {% csrf_token %}
         {{ form }}
         <button type='submit' @click='submit()'>Submit</button>    
-        <p>Frontent var, Alpine.js says: <span x-text='name'></p>
-        <p>Backend var, Django says: {{name}}</p>
+        <p>Frontent var, Alpine.js says: <span x-text='name'></span> 
+        ( <span x-text='author'></span>, <span x-text='color'></span>)
+        </p>
+        <p>Backend var, Django says: {{name}} ({{author}}, {{color}})</p>
         <h4>Books:</h4>
         <ul>
         {% for book in books %}
