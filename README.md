@@ -1,4 +1,7 @@
-# Test project form tetra forms
+# Test project for tetra forms
+
+This is just a temporary testing project to test the functionality of tetra forms.
+Don't bother bookmarking it. It will be deleted right after correct working form support and incorporated into `tetra.tests`.
 
 ## Installation
 
