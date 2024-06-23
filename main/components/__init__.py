@@ -13,6 +13,7 @@ class PersonFormComponent(FormComponent):
 
     def load(self, *args, **kwargs) -> None:
         self.persons = Person.objects.all()
+        self.message: str = ""
 
     # language=html
     template = """
@@ -29,11 +30,16 @@ class PersonFormComponent(FormComponent):
           <li>{{person}}</li>
         {% endfor %}
         </ul>
+        {{message}}
     </div>
     """
 
     def form_valid(self, form) -> None:
         Person.objects.create(first_name=self.first_name, last_name=self.last_name)
+        self.message = "Person successfully saved."
+
+    def form_invalid(self, form) -> None:
+        self.message = "Error saving person."
 
 
 @default.register
@@ -42,6 +48,14 @@ class BookFormComponent(FormComponent):
 
     def load(self, *args, **kwargs) -> None:
         self.books = Book.objects.all()
+        self.message: str = ""
+
+    def form_valid(self, form) -> None:
+        Book.objects.create(first_name=self.name)
+        self.message = "Book successfully saved."
+
+    def form_invalid(self, form) -> None:
+        self.message = "Error saving book."
 
     # language=html
     template = """
@@ -58,5 +72,6 @@ class BookFormComponent(FormComponent):
           <li>{{book}}</li>
         {% endfor %}
         </ul>
+        {{message}}
     </div>
     """
