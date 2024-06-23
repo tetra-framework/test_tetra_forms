@@ -1,0 +1,18 @@
+[project]
+name = "tetra_testforms"
+dynamic = ["version"]
+description = "Demo/Test projet for tetra forms"
+authors = [
+    { name = "Christian González", email = "christian.gonzalez@nerdocs.at" }
+]
+dependencies = [
+    "django>=5.0",
+    "tetra",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+]
+

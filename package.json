@@ -1,0 +1,15 @@
+{
+  "name": "tetra_testforms",
+  "version": "1.0.0",
+  "description": "Tetra test forms package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Gonzalez",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "esbuild": "^0.21.5"
+  }
+}

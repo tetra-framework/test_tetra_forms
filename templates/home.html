@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load tetra %}
+
+{% block body %}
+  <div class="container">
+  <div class="row">
+    <div class="col">
+      {% @ main.default.person_form_component / %}
+    </div>
+    <div class="col">
+      {% @ main.default.book_form_component / %}
+
+    </div>
+  </div>
+
+  </div>
+{% endblock %}
