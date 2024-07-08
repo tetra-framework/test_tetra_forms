@@ -8,9 +8,15 @@ Don't bother bookmarking it. It will be deleted right after correct working form
 ```bash
 virtualenv .venv
 . .venv/bin/activate
-pip install tetra  # you may have to install the development version or a branch
+pip install tetra  # for testing the release version
+# for testing a local tetra build you may have to install a development 
+# version or a local branch instead
+# pip install -e /path/to/local/tetra/install
+
+# install this project too:
 pip install -e .
 
+# install node dependencies (esbuild for now)
 npm install
 ```
 
