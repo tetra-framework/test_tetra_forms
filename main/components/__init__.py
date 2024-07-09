@@ -67,6 +67,12 @@ class BookFormComponent(FormComponent):
     def form_invalid(self, form) -> None:
         self.message = "Error saving book."
 
+    @public
+    def remove(self, id: int) -> None:
+        book = Book.objects.get(id=id)
+        book.delete()
+        self.message = f"Book {book} successfully deleted."
+
     # language=html
     template = """
     <div class='card'>
@@ -82,7 +88,11 @@ class BookFormComponent(FormComponent):
         <h4>Books:</h4>
         <ul>
         {% for book in books %}
-          <li>{{book}}</li>
+          <li>
+            {{book}}
+            <button class="btn btn-danger btn-sm" 
+                @click='remove({{book.id}})'>X</button>
+          </li>
         {% endfor %}
         </ul>
         {{message}}
