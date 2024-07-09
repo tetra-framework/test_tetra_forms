@@ -1,5 +1,5 @@
 from main.models import Person, Book
-from tetra import Library
+from tetra import Library, public
 from tetra.components import FormComponent
 
 from main.forms import PersonForm, BookForm
@@ -15,6 +15,12 @@ class PersonFormComponent(FormComponent):
         self.persons = Person.objects.all()
         self.message: str = ""
 
+    @public
+    def remove(self,id: int) -> None:
+        person = Person.objects.get(id=id)
+        person.delete()
+        self.message = f"Person {person} successfully deleted."
+
     # language=html
     template = """
     <div class='card'>
@@ -27,7 +33,11 @@ class PersonFormComponent(FormComponent):
         <h4>Persons:</h4>
         <ul>
         {% for person in persons %}
-          <li>{{person}}</li>
+          <li>
+          {{person}}
+          <button class="btn btn-danger btn-sm" 
+                @click='remove({{person.id}})'>X</button>
+          </li>
         {% endfor %}
         </ul>
         {{message}}
@@ -61,6 +71,7 @@ class BookFormComponent(FormComponent):
     template = """
     <div class='card'>
         <h3 class='card-title'>Create a new Book:</h3>
+        <h4>Testing ForeignKeys with Tetra</h4>
         {% csrf_token %}
         {{ form }}
         <button type='submit' @click='submit()'>Submit</button>    
