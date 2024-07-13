@@ -37,6 +37,9 @@ class PersonFormComponent(FormComponent):
         {% for person in persons %}
           <li>
           {{person}}
+          {% if person.attachment %}
+          Attachment: {{person.attachment}}
+          {% endif %}
           <button class="btn btn-danger btn-sm" 
                 @click='remove({{person.id}})'>X</button>
           </li>
