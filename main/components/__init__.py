@@ -28,8 +28,10 @@ class PersonFormComponent(FormComponent):
         {% csrf_token %}
         {{ form }}
         <button type='submit' @click='submit()'>Submit</button>    
-        <p>Frontent var, Alpine.js says: <span x-text='first_name'></span> <span x-text='last_name'></span></p>
-        <p>Backend var, Django says: {{first_name}} {{last_name}}</p>
+        <p>Alpine.js: first_name: <span x-text='first_name'></span> 
+        last_name: <span x-text='last_name'></span></p>
+        <p>Django: first_name: {{first_name}} last_name: 
+        {{last_name}}</p>
         <h4>Persons:</h4>
         <ul>
         {% for person in persons %}
@@ -81,10 +83,10 @@ class BookFormComponent(FormComponent):
         {% csrf_token %}
         {{ form }}
         <button type='submit' @click='submit()'>Submit</button>    
-        <p>Frontent var, Alpine.js says: <span x-text='name'></span> 
+        <p>Alpine.js: <span x-text='name'></span> 
         ( <span x-text='author'></span>, <span x-text='color'></span>)
         </p>
-        <p>Backend var, Django says: {{name}} ({{author}}, {{color}})</p>
+        <p>Django: {{name}} ({{author}}, {{color}})</p>
         <h4>Books:</h4>
         <ul>
         {% for book in books %}
