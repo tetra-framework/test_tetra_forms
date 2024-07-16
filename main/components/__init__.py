@@ -16,7 +16,7 @@ class PersonFormComponent(FormComponent):
         self.message: str = ""
 
     @public
-    def remove(self,id: int) -> None:
+    def remove(self, id: int) -> None:
         person = Person.objects.get(id=id)
         person.delete()
         self.message = f"Person {person} successfully deleted."
