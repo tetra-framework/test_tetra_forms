@@ -26,7 +26,11 @@ class PersonFormComponent(FormComponent):
     <div class='card'>
         <h3 class='card-title'>Create a new Person:</h3>
         {% csrf_token %}
-        {{ form }}
+        {% for field in form %}
+          {{field.label}}{% if field.field.required %} *{% endif %}:
+          {{field}}
+          {{field.errors}}
+        {% endfor %}
         <button type='submit' @click='submit()'>Submit</button>    
         <p>Alpine.js: first_name: <span x-text='first_name'></span> 
         last_name: <span x-text='last_name'></span></p>
@@ -84,7 +88,11 @@ class BookFormComponent(FormComponent):
         <h3 class='card-title'>Create a new Book:</h3>
         <h4>Testing ForeignKeys with Tetra</h4>
         {% csrf_token %}
-        {{ form }}
+        {% for field in form %}
+          {{field.label}}{% if field.field.required %} *{% endif %}:
+          {{field}}
+          {{field.errors}}
+        {% endfor %}
         <button type='submit' @click='submit()'>Submit</button>    
         <p>Alpine.js: <span x-text='name'></span> 
         ( <span x-text='author'></span>, <span x-text='color'></span>)
