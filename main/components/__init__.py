@@ -70,7 +70,8 @@ class BookFormComponent(FormComponent):
         self.message: str = ""
 
     def form_valid(self, form) -> None:
-        Book.objects.create(name=self.name)
+        instance = form.save(commit=False)
+        instance.save()
         self.message = "Book successfully saved."
 
     def form_invalid(self, form) -> None:
