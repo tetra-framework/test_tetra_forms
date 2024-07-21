@@ -29,7 +29,7 @@ class Book(models.Model):
     name = models.CharField(max_length=100)
     author = models.ForeignKey(Person, on_delete=models.CASCADE)
     delivery_from = models.ForeignKey(
-        PersonAddress, on_delete=models.CASCADE, blank=True, null=True
+        PersonAddress, on_delete=models.CASCADE, null=True
     )
     color = models.IntegerField(choices=Color.choices, default=Color.RED)
 
