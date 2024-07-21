@@ -70,6 +70,9 @@ class BookFormComponent(FormComponent):
     def load(self, *args, **kwargs) -> None:
         self.books = Book.objects.all()
         self.message: str = ""
+        self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
+            person=self.author
+        )
 
     def form_valid(self, form) -> None:
         instance = form.save(commit=False)
