@@ -85,6 +85,12 @@ class BookFormComponent(FormComponent):
         book.delete()
         self.message = f"Book {book} successfully deleted."
 
+    @public.watch("author")
+    def update_address(self, value, old_value, attr) -> None:
+        self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
+            person=self.author
+        )
+
     # language=html
     template = """
     <div class='card'>
