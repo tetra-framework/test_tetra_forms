@@ -1,6 +1,6 @@
 from django import forms
 
-from main.models import Person, Book
+from main.models import Person, Book, PersonAddress
 
 
 class PersonForm(forms.ModelForm):
@@ -12,4 +12,10 @@ class PersonForm(forms.ModelForm):
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
+        fields = "__all__"
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = PersonAddress
         fields = "__all__"
