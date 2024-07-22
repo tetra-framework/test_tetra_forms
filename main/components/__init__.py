@@ -70,9 +70,10 @@ class BookFormComponent(FormComponent):
     def load(self, *args, **kwargs) -> None:
         self.books = Book.objects.all()
         self.message: str = ""
-        self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
-            person=self.author
-        )
+        if hasattr(self, 'author') and self.author:
+            self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
+                person=self.author
+            )
 
     def form_valid(self, form) -> None:
         instance = form.save(commit=False)
@@ -81,6 +82,11 @@ class BookFormComponent(FormComponent):
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving book."
+        # Reset queryset based on current author if available
+        if self.author:
+            self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
+                person=self.author
+            )
 
     @public
     def remove(self, id: int) -> None:
@@ -114,6 +120,7 @@ class BookFormComponent(FormComponent):
         {% for book in books %}
           <li>
             {{book}}
+            <p>delivery from: {{book.delivery_from}}</p>
             <button class="btn btn-danger btn-sm" 
                 @click='remove({{book.id}})'>X</button>
           </li>
