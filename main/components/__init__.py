@@ -5,6 +5,7 @@ from tetra import Library, public
 from tetra.components import FormComponent
 
 from main.forms import PersonForm, BookForm, AddressForm
+from tetra.components.base import DependencyFormMixin, ModelFormComponent
 
 default = Library()
 
@@ -56,7 +57,7 @@ class PersonFormComponent(FormComponent):
     """
 
     def form_valid(self, form) -> None:
-        Person.objects.create(first_name=self.first_name, last_name=self.last_name)
+        self.form.save()
         self.message = "Person successfully saved."
 
     def form_invalid(self, form) -> None:
@@ -64,29 +65,31 @@ class PersonFormComponent(FormComponent):
 
 
 @default.register
-class BookFormComponent(FormComponent):
+class BookFormComponent(DependencyFormMixin, ModelFormComponent):
     form_class = BookForm
+    field_dependencies = {"delivery_from": "author"}
 
     def load(self, *args, **kwargs) -> None:
         self.books = Book.objects.all()
         self.message: str = ""
-        if hasattr(self, 'author') and self.author:
-            self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
-                person=self.author
-            )
 
     def form_valid(self, form) -> None:
         instance = form.save(commit=False)
         instance.save()
         self.message = "Book successfully saved."
+        self.form_submitted = False
+        self.clear()
+        print("clear form")
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving book."
+
+    def ready(self):
+        super().ready()
         # Reset queryset based on current author if available
-        if self.author:
-            self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
-                person=self.author
-            )
+        self.update_field_queryset(
+            "delivery_from", PersonAddress.objects.filter(person=self.author)
+        )
 
     @public
     def remove(self, id: int) -> None:
@@ -95,9 +98,11 @@ class BookFormComponent(FormComponent):
         self.message = f"Book {book} successfully deleted."
 
     @public.watch("author")
-    def update_address(self, value, old_value, attr) -> None:
-        self.form.fields["delivery_from"].queryset = PersonAddress.objects.filter(
-            person=self.author
+    def author_changed(self, value, old_value, attr) -> None:
+        self.update_field_queryset(
+            "delivery_from",
+            PersonAddress.objects.filter(person=self.author),
+            old_value=old_value,
         )
 
     # language=html
@@ -112,9 +117,13 @@ class BookFormComponent(FormComponent):
         {% endfor %}
         <button type='submit' @click='submit()'>Submit</button>    
         <p>Alpine.js: <span x-text='name'></span> 
-        ( <span x-text='author'></span>, <span x-text='color'></span>)
+        ( author: <span x-text='author'></span>, 
+        delivery_from: <span x-text='delivery_from'></span>, 
+        color: <span x-text='color'></span>)
         </p>
-        <p>Django: {{name}} ({{author}}, {{color}})</p>
+        <p>Django: name: {{name}} (author: {{author}}, 
+        delivery_from: {{delivery_from}}, 
+        color: {{color}})</p>
         <h4>Books:</h4>
         <ul>
         {% for book in books %}
