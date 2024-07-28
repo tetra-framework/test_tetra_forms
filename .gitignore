@@ -292,3 +292,4 @@ dist
 .pnp.*
 node_modules/
 static/
+media/
