@@ -2,7 +2,7 @@ from sourcetypes import django_html
 
 from main.models import Person, Book, PersonAddress
 from tetra import Library, public
-from tetra.components import FormComponent
+from tetra.components import FormComponent, FormFactory
 
 from main.forms import PersonForm, BookForm, AddressForm
 from tetra.components.base import DependencyFormMixin, ModelFormComponent
@@ -12,7 +12,7 @@ default = Library()
 
 @default.register
 class PersonFormComponent(FormComponent):
-    form_class = PersonForm
+    form_class = FormFactory.factory(Form=PersonForm)
 
     def load(self, *args, **kwargs) -> None:
         self.persons = Person.objects.all()
@@ -27,14 +27,17 @@ class PersonFormComponent(FormComponent):
     # language=html
     template = """
     <div class='card'>
-        <h3 class='card-title'>Create a new Person:</h3>
-        {% csrf_token %}
-        {% for field in form %}
-          {{field.label}}{% if field.field.required %} *{% endif %}:
-          {{field}}
-          {{field.errors}}
-        {% endfor %}
-        <button type='submit' @click='submit()'>Submit</button>    
+       <h3 class='card-title'>Create a new Person:</h3>
+          <form enctype="multipart/form-data" method="post">
+            <input type="hidden" name="identifier" >
+            {% csrf_token %}
+                {% for field in form %}
+                  {{field.label}}{% if field.field.required %} *{% endif %}:
+                  {{field}}
+                  {{field.errors}}
+                {% endfor %}
+             <button type='submit'>Submit</button>    
+          </form>
         <p>Alpine.js: first_name: <span x-text='first_name'></span> 
         last_name: <span x-text='last_name'></span></p>
         <p>Django: first_name: {{first_name}} last_name: 
@@ -45,7 +48,8 @@ class PersonFormComponent(FormComponent):
           <li>
           {{person}}
           {% if person.attachment %}
-          Attachment: {{person.attachment}}
+            <h6>Attachment</h6>
+            <a href="{{person.attachment.url}}" target='_blank'>{{person.attachment}}</a>
           {% endif %}
           <button class="btn btn-danger btn-sm" 
                 @click='remove({{person.id}})'>X</button>
@@ -57,7 +61,8 @@ class PersonFormComponent(FormComponent):
     """
 
     def form_valid(self, form) -> None:
-        self.form.save()
+        instance = form.save(commit=False)
+        instance.save()
         self.message = "Person successfully saved."
 
     def form_invalid(self, form) -> None:
@@ -66,7 +71,7 @@ class PersonFormComponent(FormComponent):
 
 @default.register
 class BookFormComponent(DependencyFormMixin, ModelFormComponent):
-    form_class = BookForm
+    form_class = FormFactory.factory(Form=BookForm)
     field_dependencies = {"delivery_from": "author"}
 
     def load(self, *args, **kwargs) -> None:
@@ -109,13 +114,16 @@ class BookFormComponent(DependencyFormMixin, ModelFormComponent):
     template = """
     <div class='card'>
         <h3 class='card-title'>Create a new Book:</h3>
-        {% csrf_token %}
-        {% for field in form %}
-          {{field.label}}{% if field.field.required %} *{% endif %}:
-          {{field}}
-          {{field.errors}}
-        {% endfor %}
-        <button type='submit' @click='submit()'>Submit</button>    
+          <form enctype="multipart/form-data" method="post">
+            <input type="hidden" name="identifier" >
+            {% csrf_token %}
+                {% for field in form %}
+                  {{field.label}}{% if field.field.required %} *{% endif %}:
+                  {{field}}
+                  {{field.errors}}
+                {% endfor %}
+             <button type='submit'>Submit</button>    
+          </form>  
         <p>Alpine.js: <span x-text='name'></span> 
         ( author: <span x-text='author'></span>, 
         delivery_from: <span x-text='delivery_from'></span>, 
@@ -142,7 +150,7 @@ class BookFormComponent(DependencyFormMixin, ModelFormComponent):
 
 @default.register
 class AddressFormComponent(FormComponent):
-    form_class = AddressForm
+    form_class = FormFactory.factory(Form=AddressForm)
 
     def load(self, *args, **kwargs) -> None:
         self.address_list = PersonAddress.objects.all()
@@ -166,13 +174,16 @@ class AddressFormComponent(FormComponent):
     template: django_html = """
         <div class='card'>
         <h3 class='card-title'>Create a new Address for Person:</h3>
-        {% csrf_token %}
-        {% for field in form %}
-          {{field.label}}{% if field.field.required %} *{% endif %}:
-          {{field}}
-          {{field.errors}}
-        {% endfor %}
-        <button type='submit' @click='submit()'>Submit</button>    
+          <form enctype="multipart/form-data" method="post">
+            <input type="hidden" name="identifier" >
+            {% csrf_token %}
+                {% for field in form %}
+                  {{field.label}}{% if field.field.required %} *{% endif %}:
+                  {{field}}
+                  {{field.errors}}
+                {% endfor %}
+             <button type='submit'>Submit</button>    
+          </form>  
         <h4>Addresses:</h4>
         <ul>
         {% for address in address_list %}
