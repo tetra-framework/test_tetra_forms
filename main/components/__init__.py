@@ -23,12 +23,24 @@ class PersonFormComponent(FormComponent):
         person = Person.objects.get(id=id)
         person.delete()
         self.message = f"Person {person} successfully deleted."
+        # self.persons = Person.objects.all()
+
+    def form_valid(self, form) -> None:
+        instance = form.save(commit=False)
+        instance.save()
+        self.message = "Person successfully saved."
+        self.persons = Person.objects.all()
+        return self.render()
+
+    def form_invalid(self, form) -> None:
+        self.message = "Error saving person."
+        return self.render()
 
     # language=html
     template = """
     <div class='card'>
        <h3 class='card-title'>Create a new Person:</h3>
-          <form enctype="multipart/form-data" method="post">
+        <form id="personForm" enctype="multipart/form-data" method="post">
             <input type="hidden" name="identifier" >
             {% csrf_token %}
                 {% for field in form %}
@@ -58,15 +70,49 @@ class PersonFormComponent(FormComponent):
         </ul>
         {{message}}
     </div>
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const componentContainer = document.querySelector('[tetra-component="main__default__person_form_component"]');
+
+  function attachFormListener() {
+    const form = document.getElementById('personForm');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => updateComponent(html))
+      .catch(error => console.error('Error:', error));
+    });
+  }
+
+  function updateComponent(html) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const newComponentContainer = tempDiv.querySelector('[tetra-component="main__default__person_form_component"]');
+    
+    if (newComponentContainer) {
+      componentContainer.innerHTML = newComponentContainer.innerHTML;
+      Alpine.initTree(componentContainer);
+      attachFormListener();
+    } else {
+      console.error('New component container not found in the response');
+    }
+  }
+
+  attachFormListener();
+});
+</script>
     """
-
-    def form_valid(self, form) -> None:
-        instance = form.save(commit=False)
-        instance.save()
-        self.message = "Person successfully saved."
-
-    def form_invalid(self, form) -> None:
-        self.message = "Error saving person."
 
 
 @default.register
@@ -82,12 +128,15 @@ class BookFormComponent(DependencyFormMixin, ModelFormComponent):
         instance = form.save(commit=False)
         instance.save()
         self.message = "Book successfully saved."
-        self.form_submitted = False
-        self.clear()
-        print("clear form")
+        self.books = Book.objects.all()
+        # self.form_submitted = False
+        # self.clear()
+        # print("clear form")
+        return self.render()
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving book."
+        return self.render()
 
     def ready(self):
         super().ready()
@@ -114,7 +163,7 @@ class BookFormComponent(DependencyFormMixin, ModelFormComponent):
     template = """
     <div class='card'>
         <h3 class='card-title'>Create a new Book:</h3>
-          <form enctype="multipart/form-data" method="post">
+          <form id='BookForm' enctype="multipart/form-data" method="post">
             <input type="hidden" name="identifier" >
             {% csrf_token %}
                 {% for field in form %}
@@ -145,6 +194,48 @@ class BookFormComponent(DependencyFormMixin, ModelFormComponent):
         </ul>
         {{message}}
     </div>
+    
+  <script>
+ document.addEventListener('DOMContentLoaded', function() {
+  const componentContainer = document.querySelector('[tetra-component="main__default__book_form_component"]');
+
+  function attachFormListener() {
+    const form = document.getElementById('BookForm');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => updateComponent(html))
+      .catch(error => console.error('Error:', error));
+    });
+  }
+
+  function updateComponent(html) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const newComponentContainer = tempDiv.querySelector('[tetra-component="main__default__book_form_component"]');
+    
+    if (newComponentContainer) {
+      componentContainer.innerHTML = newComponentContainer.innerHTML;
+      Alpine.initTree(componentContainer);
+      attachFormListener();
+    } else {
+      console.error('New component container not found in the response');
+    }
+  }
+
+  attachFormListener();
+});
+</script>
     """
 
 
@@ -160,9 +251,14 @@ class AddressFormComponent(FormComponent):
         instance = form.save(commit=False)
         instance.save()
         self.message = "Address successfully saved."
+        self.address_list = PersonAddress.objects.all()
+        return self.render()
+
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving address."
+        return self.render()
+
 
     @public
     def remove(self, id: int) -> None:
@@ -174,7 +270,7 @@ class AddressFormComponent(FormComponent):
     template: django_html = """
         <div class='card'>
         <h3 class='card-title'>Create a new Address for Person:</h3>
-          <form enctype="multipart/form-data" method="post">
+          <form id='AddressForm' enctype="multipart/form-data" method="post">
             <input type="hidden" name="identifier" >
             {% csrf_token %}
                 {% for field in form %}
@@ -196,4 +292,45 @@ class AddressFormComponent(FormComponent):
         </ul>
         {{message}}
     </div>
+    <script>
+     document.addEventListener('DOMContentLoaded', function() {
+  const componentContainer = document.querySelector('[tetra-component="main__default__address_form_component"]');
+
+  function attachFormListener() {
+    const form = document.getElementById('AddressForm');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value,
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => updateComponent(html))
+      .catch(error => console.error('Error:', error));
+    });
+  }
+
+  function updateComponent(html) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const newComponentContainer = tempDiv.querySelector('[tetra-component="main__default__address_form_component"]');
+    
+    if (newComponentContainer) {
+      componentContainer.innerHTML = newComponentContainer.innerHTML;
+      Alpine.initTree(componentContainer);
+      attachFormListener();
+    } else {
+      console.error('New component container not found in the response');
+    }
+  }
+
+  attachFormListener();
+});
+</script>
     """
