@@ -16,3 +16,5 @@ dev = [
     "black",
 ]
 
+[tool.setuptools.packages.find]
+where = ["src"]
