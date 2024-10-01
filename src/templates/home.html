@@ -1,20 +1,13 @@
-{% extends 'base.html' %}
 {% load tetra %}
+<html>
+<head>
+  <title>Test Tetra Forms Projet</title>
+  {% tetra_styles %}
+  {% tetra_scripts include_alpine=True %}
+</head>
+<body>
+  {% @ main.default.PersonFormComponent / %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
 
-{% block body %}
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        {% @ main.default.person_form_component / %}
-      </div>
-      <div class="col">
-        {% @ main.default.address_form_component / %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        {% @ main.default.book_form_component / %}
-      </div>
-    </div>
-  </div>
-{% endblock %}
