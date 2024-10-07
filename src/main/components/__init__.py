@@ -29,11 +29,9 @@ class PersonFormComponent(FormComponent):
         instance.save()
         self.message = "Person successfully saved."
         self.persons = Person.objects.all()
-        return self.render()
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving person."
-        return self.render()
 
     # language=html
     template: django_html = """
