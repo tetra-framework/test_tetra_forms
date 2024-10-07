@@ -65,50 +65,50 @@ class PersonFormComponent(FormComponent):
     """
 
     # language=javascript
-    script: javascript = """
-    export default {
-    
-    // FIXME: this code doesn't work properly, is hardcoded and wrong. 
-    // uploading files should be done in tetra.js
-    init() {
-        document.addEventListener('DOMContentLoaded', function() {
-          const componentContainer = document.querySelector('[tetra-component="main__default__person_form_component"]');
-          function attachFormListener() {
-            const form = document.getElementById('personForm');
-            form.addEventListener('submit', function(event) {
-              event.preventDefault();
-              const formData = new FormData(form);
-              fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                  'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value,
-                  'X-Requested-With': 'XMLHttpRequest'
-                }
-              })
-              .then(response => response.text())
-              .then(html => updateComponent(html))
-              .catch(error => console.error('Error:', error));
-            });
-          }
-          function updateComponent(html) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-            const newComponentContainer = tempDiv.querySelector('[tetra-component="main__default__person_form_component"]');
-            
-            if (newComponentContainer) {
-              componentContainer.innerHTML = newComponentContainer.innerHTML;
-              Alpine.initTree(componentContainer);
-              attachFormListener();
-            } else {
-              console.error('New component container not found in the response');
-            }
-          }
-          attachFormListener();
-        })
-      }
-    }
-    """
+    # script: javascript = """
+    # export default {
+    #
+    # // FIXME: this code doesn't work properly, is hardcoded and wrong.
+    # // uploading files should be done in tetra.js
+    # init() {
+    #     document.addEventListener('DOMContentLoaded', function() {
+    #       const componentContainer = document.querySelector('[tetra-component="main__default__person_form_component"]');
+    #       function attachFormListener() {
+    #         const form = document.getElementById('personForm');
+    #         form.addEventListener('submit', function(event) {
+    #           event.preventDefault();
+    #           const formData = new FormData(form);
+    #           fetch(form.action, {
+    #             method: 'POST',
+    #             body: formData,
+    #             headers: {
+    #               'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value,
+    #               'X-Requested-With': 'XMLHttpRequest'
+    #             }
+    #           })
+    #           .then(response => response.text())
+    #           .then(html => updateComponent(html))
+    #           .catch(error => console.error('Error:', error));
+    #         });
+    #       }
+    #       function updateComponent(html) {
+    #         const tempDiv = document.createElement('div');
+    #         tempDiv.innerHTML = html;
+    #         const newComponentContainer = tempDiv.querySelector('[tetra-component="main__default__person_form_component"]');
+    #
+    #         if (newComponentContainer) {
+    #           componentContainer.innerHTML = newComponentContainer.innerHTML;
+    #           Alpine.initTree(componentContainer);
+    #           attachFormListener();
+    #         } else {
+    #           console.error('New component container not found in the response');
+    #         }
+    #       }
+    #       attachFormListener();
+    #     })
+    #   }
+    # }
+    # """
 
     # should be done automatically in FormComponent:
     # def form_valid(self, form) -> None:
