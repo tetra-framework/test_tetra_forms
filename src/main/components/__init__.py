@@ -22,7 +22,6 @@ class PersonFormComponent(FormComponent):
         person = Person.objects.get(id=id)
         person.delete()
         self.message = f"Person {person} successfully deleted."
-        # self.persons = Person.objects.all()
 
     def form_valid(self, form) -> None:
         instance = form.save(commit=False)
