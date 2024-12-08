@@ -1,15 +1,12 @@
 from sourcetypes import django_html, javascript
 
 from main.models import Person
-from tetra import Library, public
+from tetra import public
 from tetra.components import FormComponent
 
 from main.forms import PersonForm
 
-default = Library()
 
-
-@default.register
 class PersonFormComponent(FormComponent):
     form_class = PersonForm
 
