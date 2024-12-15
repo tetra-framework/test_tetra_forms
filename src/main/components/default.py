@@ -43,6 +43,11 @@ class PersonFormComponent(FormComponent):
         {% @v 'last_name' %}</p>
         <p><strong>Django:</strong> first_name: {{first_name}}, last_name: 
         {{last_name}}</p>
+        <p>Attachment: {{attachment}}<br/>
+        {% if attachment %}
+        <img src='{{attachment.path}}' alt='uploaded picture'>
+        {% endif %}
+        </p>
         <h4>Persons:</h4>
         <ul>
         {% for person in persons %}
