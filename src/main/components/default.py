@@ -37,7 +37,7 @@ class PersonFormComponent(FormComponent):
         {% csrf_token %}
         
         {{ form }}
-        <button type='submit' @click='submit()'>Submit</button>    
+        <button @click='submit()'>Submit</button>    
     
         <p><strong>Alpine.js:</strong> first_name: {% @v 'first_name' %}, last_name: 
         {% @v 'last_name' %}</p>
