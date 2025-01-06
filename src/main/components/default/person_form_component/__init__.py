@@ -9,10 +9,12 @@ from main.forms import PersonForm
 
 class PersonFormComponent(FormComponent):
     form_class = PersonForm
+    message: str = ""
 
     def load(self, *args, **kwargs) -> None:
         self.persons = Person.objects.all()
-        self.message: str = ""
+        self.first_name = "John"
+        self.last_name = "Doe"
 
     @public
     def remove(self, id: int) -> None:
@@ -21,48 +23,17 @@ class PersonFormComponent(FormComponent):
         self.message = f"Person {person} successfully deleted."
 
     def form_valid(self, form) -> None:
-        instance = form.save(commit=False)
-        instance.save()
-        self.message = "Person successfully saved."
+        # from tetra.utils import TetraTemporaryUploadedFile
+        # file: TetraTemporaryUploadedFile = form.cleaned_data["attachment"]
+        instance = form.save()
+        self.message = f"Person '{instance}' successfully saved."
         self.persons = Person.objects.all()
-        self.clear()
+        self._reset()
 
     def form_invalid(self, form) -> None:
         self.message = "Error saving person."
 
     # language=html
-    template: django_html = """
-    <div class='card'>
-        <h3 class='card-title'>Create a new Person:</h3>
-        {% csrf_token %}
-        
-        {{ form }}
-        <button @click='submit()'>Submit</button>    
-    
-        <p><strong>Alpine.js:</strong> first_name: {% @v 'first_name' %}, last_name: 
-        {% @v 'last_name' %}</p>
-        <p><strong>Django:</strong> first_name: {{first_name}}, last_name: 
-        {{last_name}}</p>
-        <p>Attachment: {{attachment}}<br/>
-        {% if attachment %}
-        <img src='{{attachment.path}}' alt='uploaded picture'>
-        {% endif %}
-        </p>
-        <h4>Persons:</h4>
-        <ul>
-        {% for person in persons %}
-          <li>
-          {{person}}
-          {% if person.attachment %}
-          Attachment: {{person.attachment}}
-          {% endif %}
-          <button @click='remove({{person.id}})'>X</button>
-          </li>
-        {% endfor %}
-        </ul>
-        {{message}}
-    </div>
-    """
 
     # language=javascript
     # script: javascript = """

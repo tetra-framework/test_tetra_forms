@@ -1,0 +1,146 @@
+<div class='card mt-5'>
+  <div class='card-header'>
+    <h3 class='card-title'>Create a new Person:</h3>
+  </div>
+  {% csrf_token %}
+  <div class='card-body'>
+    <div class='row'>
+      <div class='col-6'>
+        <label for="id_first_name" class="form-label">
+          {{form.first_name.label}}
+        </label>
+        <input type="text" id="id_first_name" name="first_name"
+               class="form-control{% if form.first_name.errors %} is-invalid{% endif %}"
+               x-model="first_name"/>
+        <div class="invalid-feedback">
+          {{ form.first_name.errors }}
+        </div>
+      </div>
+      <div class='col-6'>
+        <label for="id_last_name" class="form-label">
+          {{form.last_name.label}}
+        </label>
+        <input type="text" id="id_last_name" name="last_name"
+               class="form-control{% if form.last_name.errors %} is-invalid{% endif %}"
+               x-model="last_name"/>
+        <div class="invalid-feedback">
+          {{ form.last_name.errors }}
+        </div>
+      </div>
+    </div>
+    {# {{ form }}#}
+    <div class='row'>
+      <div class="col-12">
+        <label for="id_group" class="form-label">{{form.group.label}}</label>
+        <select id="id_group" class="form-select{% if form.group.errors %} is-invalid{% endif %}" id="country"
+            {% if form.group.field.required %} required{% endif %}
+                x-model="group">
+          {% for value, label in form.fields.group.choices %}
+            <option value="{{value}}">{{label}}</option>
+          {% endfor %}
+        </select>
+        <div class="invalid-feedback">
+          {{ form.group.errors }}
+        </div>
+      </div>
+      <div class='row-12'>
+        <label for="id_terms_conditions" class="form-label">
+          {{form.terms_conditions.label}}{% if form.terms_conditions.field.required %} *{% endif %}
+        </label>
+        <input id="id_terms_conditions" class="form-checkbox{% if form.terms_conditions.errors %} is-invalid{% endif %}" type='checkbox' name='terms_conditions' x-model='terms_conditions'>
+        <div class="invalid-feedback">
+          {{ form.terms_conditions.errors }}
+        </div>
+      </div>
+      <div class='row-12'>
+        <label for="id_attachment" class="form-label">{{form.attachment.label}}</label>
+        <input id="id_attachment" type='file' :disabled='!terms_conditions' name='attachment' @change="_uploadFile"
+          class="form-control{% if form.attachment.errors %} is-invalid{% endif %}">
+        <div class="invalid-feedback">
+          {{ form.attachment.errors }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='card-body'>
+    <button class="btn btn-secondary" @click='reset()'>Reset</button>
+    <button class="btn btn-primary" @click='submit()'
+            :disabled='!terms_conditions'>Submit</button>
+  </div>
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+  {% endif %}
+  <div class="table-responsive">
+
+    <table class='table card-table'>
+      <thead>
+      <tr>
+        <th class='col-2'>Variable</th>
+        <th class='col-5'>Alpine</th>
+        <th class='col-5'>Django</th>
+      </tr>
+      </thead>
+      <tbody>
+
+
+      <tr>
+        <td>first_name</td>
+        <td>{% @v 'first_name' %}</td>
+        <td>{{first_name}}</td>
+      </tr>
+
+      <tr>
+        <td>last_name</td>
+        <td>{% @v 'last_name' %}</td>
+        <td>{{last_name}}</td>
+
+      </tr>
+      <tr>
+        <td>group</td>
+        <td>{% @v 'group' %}</td>
+        <td>{{group}}</td>
+      </tr>
+
+      <tr>
+        <td>attachment</td>
+        <td>{% @v 'attachment' %}</td>
+        <td>{{attachment}}</td>
+      </tr>
+
+      <tr>
+        <td>terms_conditions</td>
+        <td>{% @v 'terms_conditions' %}</td>
+        <td>{{terms_conditions}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Message: {{message}}</p>
+
+  <div class='card-footer'>
+    <h4 class='card-title'>Persons:</h4>
+  </div>
+  <div class="list-group list-group-flush">
+    {% for person in persons %}
+      <div  class="list-group-item list-group-item-action py-3 lh-sm">
+        <div class="row">
+          <div class="col-auto">
+            {% if person.attachment %}
+              <img src='{{ MEDIA_URL }}{{person.attachment.url}}' width=150 alt=''>
+            {% endif %}
+          </div>
+          <div class="col text-truncate">
+            <div class="text-reset d-block">{{ person.last_name|upper }}, {{ person.first_name }}</div>
+            <div class="d-block text-secondary text-truncate mt-n1">{{ person.group|default:"---" }}</div>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-danger btn-action btn-secondary" @click='remove({{person.id}})'>X</button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>
+</div>
+
