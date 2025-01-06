@@ -15,6 +15,7 @@ class PersonFormComponent(FormComponent):
         self.persons = Person.objects.all()
         self.first_name = "John"
         self.last_name = "Doe"
+        # self.terms_conditions = True
 
     @public
     def remove(self, id: int) -> None:
