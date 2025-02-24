@@ -1,10 +1,11 @@
-from sourcetypes import django_html, javascript
-
 from main.models import Person
 from tetra import public
 from tetra.components import FormComponent
 
 from main.forms import PersonForm
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class PersonFormComponent(FormComponent):
@@ -15,7 +16,8 @@ class PersonFormComponent(FormComponent):
         self.persons = Person.objects.all()
         self.first_name = "John"
         self.last_name = "Doe"
-        # self.terms_conditions = True
+        self.group = None
+        self.terms_conditions = True
 
     @public
     def remove(self, id: int) -> None:
@@ -32,7 +34,7 @@ class PersonFormComponent(FormComponent):
         self._reset()
 
     def form_invalid(self, form) -> None:
-        self.message = "Error saving person."
+        self.message = "Form is invalid."
 
     # language=html
 
