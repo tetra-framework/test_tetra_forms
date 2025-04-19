@@ -69,7 +69,12 @@
         <div class="row">
           <div class="col-auto">
             {% if person.attachment %}
-              <img src='{{ MEDIA_URL }}{{person.attachment.url}}' width=150 alt=''>
+              <div>
+                <img src='{{ MEDIA_URL }}{{person.attachment.url}}' width=150 alt=''>
+              </div>
+              <div>
+                <button class="btn btn-secondary btn-sm" @click="download()">Download</button>
+              </div>
             {% endif %}
           </div>
           <div class="col text-truncate">

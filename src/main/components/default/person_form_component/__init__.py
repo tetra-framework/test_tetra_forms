@@ -1,6 +1,7 @@
 from main.models import Person
 from tetra import public
 from tetra.components import FormComponent
+from django.http import FileResponse
 
 from main.forms import PersonForm
 import logging
@@ -35,3 +36,7 @@ class PersonFormComponent(FormComponent):
 
     def form_invalid(self, form) -> None:
         self.message = "Form is invalid."
+
+    @public.download()
+    def download(self):
+        return FileResponse("blah", content_type="text/plain", filename="foo.bar.txt")
